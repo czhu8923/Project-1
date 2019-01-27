@@ -1,0 +1,17 @@
+import ilog.concert.*;
+import ilog.cplex.*;
+
+public class calculate{
+  public static void main(String[] args) throws IloException{
+    	IloCplex cplex=new IloCplex();
+      cplex.addMaximize{
+        cplex.sum{
+        }
+      }
+      cplex.addLe();
+      cplex.addLe();
+      cplex.solve();
+      }
+     }
+     
+    
