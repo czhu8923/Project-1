@@ -1,11 +1,12 @@
+1，这个决策变量怎么做，数组还是会溢出
 import ilog.concert.*;
 import ilog.cplex.*;
 
 public class yes{
 	public static void main (String args[]){
-		solve(4);
+		solve(5,10);
 	}
-	public static void solve(int n){
+	public static void solve(int n, int m){
 		//random data
 		double[] xPos = new double[n];
 		double[] yPos = new double[n];
@@ -22,11 +23,9 @@ public class yes{
 			}
 		}
 		//If we have 10 vehicles.
-		int m = 10;
 		
 		
 		try{
-			int s = n-1;
 			double d[]=new double[n];
 			double c[]=new double[m];
 			
@@ -78,15 +77,16 @@ public class yes{
 					}
 				}
 			}
-			
-			for(int k=1; k<m; k++){
-				IloLinearNumExpr expr =cplex.linearNumExpr();
-				for(int i=0; i<n; i++){
-					for(int j=0; j<n; j++){
-						expr.addTerm(1.0, x[i][j][k]);
-					}
+			for(int s=2; s<n-1; s++){
+				for(int k=1; k<m; k++){
+					IloLinearNumExpr expr =cplex.linearNumExpr();
+					for(int i=0; i<n; i++){
+						for(int j=0; j<n; j++){
+							expr.addTerm(1.0, x[i][j][k]);
+						}
+					}	
+					cplex.addGe(s, expr);
 				}
-				cplex.addGe(s-1, expr);
 			}
 			
 			for(int i=0;i<n;i++){
@@ -121,7 +121,11 @@ public class yes{
 				cplex.addEq(1.0, expr);
 			}
 			
-			
+			if(cplex.solve()){
+				System.out.println("the objective is"+cplex.getObjValue());
+			}else{
+				System.out.println("the model was not solved");
+			}
 			
 		}catch (IloException e){
 			e.printStackTrace();
