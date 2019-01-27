@@ -1,0 +1,130 @@
+import ilog.concert.*;
+import ilog.cplex.*;
+
+public class yes{
+	public static void main (String args[]){
+		solve(4);
+	}
+	public static void solve(int n){
+		//random data
+		double[] xPos = new double[n];
+		double[] yPos = new double[n];
+		for(int i=0; i<n; i++){
+			xPos[i] = Math.random()*100;
+			yPos[i] = Math.random()*100;
+		}
+		double[][] t = new double[n][n];
+		double g = 100.0;
+		for(int i=0; i<n; i++){
+			for(int j=0; j<n; j++){
+				t[i][j] = Math.sqrt(Math.pow(xPos[i]-xPos[j], 2)+Math.pow(yPos[i]-yPos[j], 2));
+				t[i][j] = t[i][j] * g;
+			}
+		}
+		//If we have 10 vehicles.
+		int m = 10;
+		
+		
+		try{
+			int s = n-1;
+			double d[]=new double[n];
+			double c[]=new double[m];
+			
+			IloCplex cplex = new IloCplex();
+			// variables
+			IloNumVar[][][] x = new IloNumVar[n][n][];
+			for(int i=0; i<n; i++){
+				for(int j=0; j<n; j++){
+						x[i][j] = cplex.boolVarArray(m);
+				}
+			}
+			
+			IloNumVar[][] y = new IloNumVar[n][];
+			for(int i=0; i<n; i++){
+						y[i] = cplex.boolVarArray(m);
+			}
+			
+			// Objective
+			IloLinearNumExpr object = cplex.linearNumExpr();
+			for(int i=0; i<n; i++){
+				for(int j=0; j<n; j++){
+					for(int k=1; k<m; k++){
+						object.addTerm(t[i][j], x[i][j][k]);
+					}
+				}
+			}
+			
+			double f[]=new double[m];
+			IloNumVar z[] = cplex.boolVarArray(m);
+			
+			for(int k=1; k<m; k++){
+				object.addTerm(f[k], z[k]);
+			}
+			
+			cplex.addMinimize(object);
+			
+			for(int i=0; i<n; i++){
+				for(int j=0; j<n; j++){
+					for(int k=1; k<m; k++){
+						cplex.addGe(z[m],x[n][n][m]);
+					}
+				}
+			}
+			
+			for(int i=0; i<n; i++){
+				for(int j=0; j<n; j++){
+					for(int k=1; k<m; k++){
+						cplex.addGe(x[n][n][m],y[n][m]);
+					}
+				}
+			}
+			
+			for(int k=1; k<m; k++){
+				IloLinearNumExpr expr =cplex.linearNumExpr();
+				for(int i=0; i<n; i++){
+					for(int j=0; j<n; j++){
+						expr.addTerm(1.0, x[i][j][k]);
+					}
+				}
+				cplex.addGe(s-1, expr);
+			}
+			
+			for(int i=0;i<n;i++){
+				IloLinearNumExpr expr =cplex.linearNumExpr();
+					for(int k=1;k<m;k++){
+						expr.addTerm(1.0, y[i][k]);
+					}
+				cplex.addEq(1.0, expr);
+			}
+			
+			for(int k=1;k<m;k++){
+				IloLinearNumExpr expr =cplex.linearNumExpr();
+				for(int i=0;i<n;i++){
+					expr.addTerm(d[i], y[i][k]);
+				}
+				cplex.addGe(c[k], expr);
+			}	
+			
+			for(int k=1;k<m;k++){
+				IloLinearNumExpr expr=cplex.linearNumExpr();
+				for(int j=0;j<n;j++){
+					expr.addTerm(1.0, x[0][j][k]);
+				}
+				cplex.addEq(1.0, expr);
+			}
+			
+			for(int k=1;k<m;k++){
+				IloLinearNumExpr expr=cplex.linearNumExpr();
+				for(int i=0;i<n;i++){
+					expr.addTerm(1.0, x[i][0][k]);
+				}
+				cplex.addEq(1.0, expr);
+			}
+			
+			
+			
+		}catch (IloException e){
+			e.printStackTrace();
+		}
+	}
+}
