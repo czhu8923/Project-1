@@ -4,8 +4,14 @@ import ilog.cplex.*;
 public class calculate{
   public static void main(String[] args) throws IloException{
     	IloCplex cplex=new IloCplex();
+      
+      IloNumVar x1 = cplex.numVar(v: 0, v1: 40);
+      IloNumVar x2 = cplex.numVar(v: 0, Double.MAX_VALUE);
+      IloNumVar x3 = cplex.numVar(v: 0, Double.MAX_VALUE);
       cplex.addMaximize{
         cplex.sum{
+          x1,
+          ...
         }
       }
       cplex.addLe();
