@@ -11,11 +11,12 @@ public class calculate{
       cplex.addMaximize{
         cplex.sum{
           x1,
+          cplex.prod(v: 2, x2),
           ...
         }
       }
-      cplex.addLe();
-      cplex.addLe();
+      cplex.addLe(cplex.sum(), v: 20);
+      cplex.addLe(cplex.sum(), v: 30);
       cplex.solve();
       }
      }
