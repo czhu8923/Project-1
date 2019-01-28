@@ -1,4 +1,4 @@
-1，这个决策变量怎么做，数组还是会溢出
+yik的百分比求和为1，这个决策变量怎么做，数组还是会溢出
 //0<=yik<=1
 import ilog.concert.*;
 import ilog.cplex.*;
