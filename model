@@ -16,6 +16,7 @@ public class yes{
 			yPos[i] = Math.random()*100;
 		}
 		double[][] t = new double[n][n];
+		//If the unit cost is 100.
 		double g = 100.0;
 		for(int i=0; i<n; i++){
 			for(int j=0; j<n; j++){
@@ -78,6 +79,7 @@ public class yes{
 					}
 				}
 			}
+			//Subtour
 			for(int s=2; s<=n-1; s++){
 				for(int k=1; k<m; k++){
 					IloLinearNumExpr expr =cplex.linearNumExpr();
