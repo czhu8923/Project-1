@@ -1,0 +1,11 @@
+for(int s=2; s<=n-1; s++){
+				for(int k=1; k<m; k++){
+					IloLinearNumExpr expr =cplex.linearNumExpr();
+					for(int i=0; i<n; i++){
+						for(int j=0; j<n; j++){
+							expr.addTerm(1.0, x[i][j][k]);
+						}
+					}	
+					cplex.addGe(s, expr);
+				}
+			}
